@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_demo_01" model="helpdesk.ticket">
+        <field name="name">Helpdesk ticket demo</field>
+        <field name="dedicated_time">10</field>
+    </record>
+    <record id="helpdesk_ticket_tag_demo_01" model="helpdesk.tag">
+        <field name="name">TAG A</field>
+    </record>
+</odoo>

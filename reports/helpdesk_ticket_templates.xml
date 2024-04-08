@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="report_ticket">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <link rel="stylesheet" href="/prueba/static/css/style.css"/>
+                <div class="page">
+                    <h2>Ticket: <span t-field="o.name" id="sp_title"></span> </h2>
+
+                        <div class="row mt32 mb32" id="informations">
+                            <div class="col-auto mw-100 mb-2">
+                                <strong>State: </strong>
+                                <p class="m-0" t-field="o.state"></p>
+                            </div>
+                            <div t-if="o.date" class="col-auto mw-100 mb-2">
+                                <strong>Order Date: </strong>
+                                <p class="m-0" t-field="o.date"></p>
+                            </div>
+                            <div t-if="o.user_id" class="col-auto mw-100 mb-2">
+                                <strong>Assigned to: </strong>
+                                <p class="m-0" t-field="o.user_id"></p>
+                            </div>
+                            <div class="col-auto mw-100 mb-2">
+                                <strong>Partner: </strong>
+                                <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                            </div>
+                        </div>
+                        <table class="table table-sm o_main_table" id="tabla">
+                                <thead>
+                                    <tr>
+                                        <t t-set="colspan" t-value="5"/>
+                                        <th name="th_description" class="text-left">Description</th>
+                                        <th name="th_date" class="text-right">Date</th>
+                                        <th name="th_time" class="text-right">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <t t-foreach="o.action_ids" t-as="action">
+                                        <tr>
+                                            <td name="td_description">
+                                                <span t-field="action.name" id="act_name"/>
+                                            </td>
+                                            <td name="td_date" class="text-right">
+                                                <span t-field="action.date" />
+                                            </td>
+                                            <td name="td_time" class="text-right">
+                                                <span t-field="action.dedicated_time"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                        </table>
+                        <span style="margin-left:-60px;">
+                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', '4055334203203', 600, 100)"
+                                        style="width:350px;height:60px;"/>
+                        </span>
+                </div>
+            </t>
+        </t>
+    </t>
+
+</template>
+
+
+<report
+    id="action_report_ticket"
+    string="Ticket / Order"
+    model="helpdesk.ticket"
+    report_type="qweb-pdf"
+    file="prueba.report_ticket"
+    name="prueba.report_ticket"
+/>
+
+
+
+<template id="report_partner">
+    <t t-call="web.html_container">
+        <link rel="stylesheet" href="/prueba/static/css/style.css"/>
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+            <div class="page">
+            <div class="col-6">
+                <img t-if="o.image" t-att-src="image_data_uri(o.image_small)" alt="Photo"></img>
+            </div>
+            <div class="col-6 offset-1" name="company_address">
+                <h2>Name: <span t-field="o.name" id="sp_title"></span> </h2>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Street: </strong>
+                        <span t-field="o.street" id="sp_title"></span>
+                    </div>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Country: </strong>
+                        <span t-field="o.country_id" id="sp_title"></span>
+                    </div>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Zip Code: </strong>
+                        <span t-field="o.zip" id="sp_title"></span>
+                    </div>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Phone: </strong>
+                        <span t-field="o.phone" id="sp_title"></span>
+                    </div>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Email: </strong>
+                        <span t-field="o.email" id="sp_title"></span>
+                    </div>
+                    <div class="col-auto mw-100 mb-2">
+                        <strong>Is it a company?: </strong>
+                        <t t-if="o.company_type == 'person'">
+                            <span>No</span>
+                        </t>
+                        <t t-else="">
+                            <span>Yes</span>
+                        </t>
+                    </div>
+
+                    <!-- <div class="col-auto mw-100 mb-2">
+                        <strong>Company type: </strong>
+                        <span t-field="o.company_type" id="sp_title"></span>
+                    </div> -->
+            </div>
+            </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+<record id="paperformat_card" model="report.paperformat">
+    <field name="name">Card</field>
+    <field name="default" eval="True"/>
+    <field name="format">custom</field>
+    <field name="page_height">120</field>
+    <field name="page_width">200</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">3</field>
+    <field name="margin_bottom">35</field>
+    <field name="margin_left">3</field>
+    <field name="margin_right">3</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">35</field>
+    <field name="dpi">80</field>
+</record>
+
+<report
+    id="action_report_partner"
+    string="Card"
+    model="res.partner"
+    report_type="qweb-html"
+    file="prueba.report_partner"
+    name="prueba.report_partner"
+    paperformat="prueba.paperformat_card"
+/>
+</odoo>

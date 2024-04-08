@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_helpdesk_tag_form" model="ir.ui.view">
+            <field name="name">view.helpdesk_tag.form</field>
+            <field name="model">helpdesk.tag</field>
+            <field name="arch" type="xml">
+                <form string="Tag">
+                    <sheet>
+                        <group name="main">
+                            <field name="name" />
+                            <field name="ticket_ids" widget="many2many_tags"></field>
+                            <button string="Create Ticket" name="%(prueba.new_ticket_from_tag_action)d" type="action" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="view_helpdesk_tag_tree" model="ir.ui.view">
+            <field name="name">view.helpdesk_tag.tree</field>
+            <field name="model">helpdesk.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Tag">
+                    <field name="name" />
+                    <field name="ticket_ids" widget="many2many_tags"></field>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_helpdesk_tag_search" model="ir.ui.view">
+            <field name="name">view.helpdesk_tag.search</field>
+            <field name="model">helpdesk.tag</field>
+            <field name="arch" type="xml">
+                <search string="Tag">
+                    <field name="name" />
+                    <group string="Group By" name="groupby">
+                        <filter name="name_groupby" string="name" context="{'group_by': 'name'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="helpdesk_tag_action" model="ir.actions.act_window">
+            <field name="name">Tag</field>
+            <field name="res_model">helpdesk.tag</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create"> Click to create a new Tag.</p>
+            </field>
+        </record>
+
+        <record id="helpdesk_tag_new_action" model="ir.actions.act_window">
+            <field name="name">Tag</field>
+            <field name="res_model">helpdesk.tag</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <!-- <field name="help" type="html">
+                <p class="oe_view_nocontent_create"> Click to create a new Tag.</p>
+            </field> -->
+        </record>
+
+        <menuitem id="helpdesk_tag_menu" parent="helpdesk_ticket_main_menu" action="helpdesk_tag_action" sequence="20" />
+    </data>
+</odoo>

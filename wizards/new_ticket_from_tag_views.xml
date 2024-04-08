@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="new_ticket_from_tag_form" model="ir.ui.view">
+        <field name="name">new_ticket_from_tag_form</field>
+        <field name="model">new.ticket.from.tag</field>
+        <field name="arch" type="xml">
+            <form string="Create new ticket">
+                <group name="main">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="user_id" />
+                    <field name="tag_id" />
+                </group>
+                <footer>
+                    <button string="Create Ticket" name="create_ticket" type="object" class="oe_highlight"/>
+                    <button string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="new_ticket_from_tag_search" model="ir.ui.view">
+        <field name="name">new_ticket_from_tag_search</field>
+        <field name="model">new.ticket.from.tag</field>
+        <field name="arch" type="xml">
+            <search string="">
+
+            </search>
+        </field>
+    </record>
+
+    <record id="new_ticket_from_tag_action" model="ir.actions.act_window">
+        <field name="name">New ticket</field>
+        <field name="res_model">new.ticket.from.tag</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+
+    </record>
+</odoo>

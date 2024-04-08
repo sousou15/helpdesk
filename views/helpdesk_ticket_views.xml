@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2024 Trey -->
+
+<odoo>
+<record id="helpdesk_ticket_tree" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.tree</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <tree string="Tickets">
+            <field name="name"/>
+            <field name="date"/>
+            <field name="state_id"/>
+        </tree>
+    </field>
+</record>
+
+<record id="helpdesk_ticket_form" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.form</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <form string="label">
+            <header>
+                <!-- <button string="Assign" name="set_assigned" type="object" ></button>
+                <button string="Progress" name="set_progress" type="object" ></button>
+                <button string="Pending" name="set_waiting" type="object" ></button>
+                <button string="Done" name="set_done" type="object" class="oe_highlight"></button>
+                <button string="Cancel" name="set_cancel" type="object"></button> -->
+
+                <field name="state_id"></field>
+            </header>
+            <sheeet>
+                <div>
+                    <h1>
+                        Ticket#<field name="name" class="oe_inline"/>
+                    </h1>
+                </div>
+                <group name="main">
+                    <group name="left">
+                        <field name="date"></field>
+                        <field name="date_due"></field>
+                        <field name="partner_id"  context="{'default_company_type': 'person', 'default_user_id': user_id, 'default_search_type_person': True}"></field>
+                    </group>
+                    <group name="right">
+                        <field name="user_id" options="{'no_create' : True, 'no_open' : True}"></field>
+                        <field name="assigned"></field>
+                        <field name="assigned_qty" string="Tickets assigned to current user."></field>
+                        <field name="dedicated_time"></field>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Main">
+                        <group string="Description">
+                            <field name="description" nolabel="1" colspan='2'/>
+                            <field name="tag_ids" nolabel="1" colspan='2' options="{'no_create' : True}" widget="many2many_tags"/>
+                            <field name="related_tag_ids" nolabel="1" colspan='2'/>
+                             <field name="new_tag_name"/>
+                            <button string="New Tag" name="create_new_tag" type="object"/>
+                        </group>
+                    </page>
+                    <page string="Quality">
+                        <group string="Actions">
+                            <field name="action_ids" nolabel="1" context="{'default_date': date}">
+                                <tree editable="bottom">
+                                    <field name="name"></field>
+                                    <field name="date"></field>
+                                    <field name="dedicated_time"></field>
+                                </tree>
+                                <form>
+                                    <group name="action">
+                                        <field name="name"></field>
+                                        <field name="date"></field>
+                                        <field name="dedicated_time"></field>
+                                    </group>
+                                </form>
+                            </field>
+                        </group>
+                        <group string="Corrective Action">
+                            <field name="corrective_action" nolabel="1"/>
+                        </group>
+                        <group string="Preventive Action">
+                            <field name="preventive_action" nolabel="1"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheeet>
+           <div class="oe_chatter">
+
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
+
+            </div>
+        </form>
+    </field>
+</record>
+
+
+<record id="view_helpdesk_ticket_search" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.search</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name" />
+            <field name="user_id"/>
+            <separator/>
+            <filter name='Assigned' string='Assigned' domain="[('assigned', '=', True)]"/>
+            <separator/>
+            <filter name='has_time' string='Has time' domain="[('dedicated_time', '>', 0)]"/>
+            <separator/>
+            <filter name="type" string="Assigned" context="{'group_by': 'assigned'}" />
+            <separator/>
+            <filter name="assigned_with_time" string="Assigned with Time" domain="[('assigned', '=', True), ('dedicated_time', '>', 0)]"/>
+            <filter name="assigned_or_time" string="Assigned or time" domain="['|', ('assigned', '=', True), ('dedicated_time', '>', 0)]"/>
+        </search>
+    </field>
+</record>
+
+
+<record id="view_helpdesk_ticket_pivot" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.pivot</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <pivot string="Tickets" disable_linking="true">
+            <field name="user_id" type="row"></field>
+            <field name="date" interval="month" type="col"/>
+            <field name="dedicated_time" type="measure" widget="float_time"/>
+        </pivot>
+    </field>
+</record>
+
+<record id="view_helpdesk_ticket_graph" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.graph</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <graph string="Tickets" type="pie">
+            <field name="user_id"></field>
+            <field name="dedicated_time" type="measure" widget="float_time"/>
+        </graph>
+    </field>
+</record>
+
+<record id="view_helpdesk_ticket_calendar" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.calendar</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <calendar string="Tickets" date_start="date" color="user_id" event_limit="5">
+            <field name="user_id"/>
+            <field name="name"/>
+        </calendar>
+    </field>
+</record>
+
+<record id="view_helpdesk_ticket_kanban" model="ir.ui.view">
+    <field name="name">view.helpdesk_ticket.kanban</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="arch" type="xml">
+        <!-- <kanban on_create="quick_create">
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_content">
+                        Name: <field name="name"></field>
+                        <br/>
+                    </div>
+                </t>
+            </templates>
+        </kanban> -->
+
+        <kanban default_group_by="user_id" class="o_kanban_small_column o_opportunity_kanban" on_create="quick_create" archivable="false">
+                    <field name="user_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_dropdown_kanban dropdown">
+
+                                    <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item">Edit</a></t>
+                                        <t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item">Delete</a></t>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <div>
+                                        <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                    </div>
+                                    <div>
+                                        <field name="tag_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div>
+                                        Dedicated Time: <field name="dedicated_time"/>
+                                    </div>
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_right">
+                                            <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" t-att-alt="record.user_id.value" width="24" height="24" class="oe_kanban_avatar"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="oe_clear"/>
+                            </div>
+                        </t>
+                    </templates>
+            </kanban>
+    </field>
+</record>
+
+<record id="helpdesk_ticket_action" model="ir.actions.act_window">
+    <field name="name">Tickets</field>
+    <field name="res_model">helpdesk.ticket</field>
+    <field name="view_mode">kanban,tree,pivot,graph,calendar,form</field>
+    <field name="view_type">form</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+        Click here to create new tickets.
+        </p>
+    </field>
+</record>
+
+
+
+<menuitem id="helpdesk_root_menu" name="Helpdesk" sequence="10"/>
+
+<menuitem id="helpdesk_ticket_main_menu" name="Helpdesk Menu" parent="helpdesk_root_menu" sequence="10"/>
+
+<menuitem id="helpdesk_ticket_menu" parent="helpdesk_ticket_main_menu" action="helpdesk_ticket_action" sequence="10"/>
+
+</odoo>

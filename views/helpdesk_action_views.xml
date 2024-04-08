@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_helpdesk_action_form" model="ir.ui.view">
+            <field name="name">view.helpdesk_action.form</field>
+            <field name="model">helpdesk.ticket.action</field>
+            <field name="arch" type="xml">
+                <form string="Tickets">
+                    <sheet>
+                        <group name="main">
+                            <field name="name" />
+                            <field name="date"/>
+                            <field name="dedicated_time"/>
+                            <field name="ticket_id"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_helpdesk_action_tree" model="ir.ui.view">
+            <field name="name">view.helpdesk_action.tree</field>
+            <field name="model">helpdesk.ticket.action</field>
+            <field name="arch" type="xml">
+                <tree string="Tickets">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="ticket_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_helpdesk_action_search" model="ir.ui.view">
+            <field name="name">view.helpdesk_action.search</field>
+            <field name="model">helpdesk.ticket.action</field>
+            <field name="arch" type="xml">
+                <search string="action">
+                    <field name="name" />
+                    <group string="Group By" name="groupby">
+                        <filter name="name_groupby" string="name" context="{'group_by': 'name'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="helpdesk_action_action" model="ir.actions.act_window">
+            <field name="name">Action</field>
+            <field name="res_model">helpdesk.ticket.action</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create"> Click to create a new Ticket.</p>
+            </field>
+        </record>
+
+        <menuitem id="helpdesk_action_menu" parent="helpdesk_ticket_main_menu" action="helpdesk_action_action" sequence="20" />
+    </data>
+</odoo>
